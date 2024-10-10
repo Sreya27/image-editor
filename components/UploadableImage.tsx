@@ -22,6 +22,7 @@ interface UploadableImageProps {
     pixelSize: number | null;
     sepia: boolean;
   }
+  imageAttributes: any
 }
 
 const UploadableImage = ({
@@ -29,7 +30,8 @@ const UploadableImage = ({
   isSelected,
   onSelect,
   onChange,
-  imageFilters
+  imageFilters,
+  imageAttributes
 }: UploadableImageProps) => {
   const [image] = useImage(imageUrl || "");
   const imageRef = useRef<Konva.Image>(null);
@@ -85,6 +87,10 @@ const UploadableImage = ({
     <>
       <KonvaImage
         image={image}
+        x={imageAttributes.x}
+        y={imageAttributes.y}
+        width={imageAttributes.width}
+        height={imageAttributes.height}
         draggable
         ref={imageRef}
         onClick={onSelect}

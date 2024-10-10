@@ -29,9 +29,9 @@ const Canvas = () => {
   const [imageAttributes, setImageAttributes] = useState<imageAttributes>({
     x: 100,
     y: 100,
-    width: undefined,
-    height: undefined,
-    rotation: undefined,
+    width: 0,
+    height: 0,
+    rotation: 0,
   });
   const [imageFilters, setImageFilters] = useState<imageFilters>({
     blurRadius: 0,
@@ -52,9 +52,9 @@ const Canvas = () => {
         const newImageUrl = URL.createObjectURL(file);
         const newImageAttributes = {
             imageUrl: newImageUrl,
-            x: 10,
-            y: 10,
-            width: 512,
+            x: 100,
+            y: 100,
+            width: 768,
             height: 512,
         }
         setImageUrl(newImageUrl);
@@ -68,19 +68,6 @@ const Canvas = () => {
     if (clickedOnEmpty) {
         setIsSelected(false);
     }
-  }
-
-  const handleChangeAttributes = (attributes: {
-    x: number;
-    y: number;
-    width?: number;
-    height?: number;
-    rotation?: number;
-  }) => {
-    setImageAttributes((oldAttributes) => {
-        const newImageAttributes = {...oldAttributes, ...attributes};
-        return newImageAttributes;
-    }); // Update image attributes
   }
 
   const handleBlurClick = () => {
@@ -104,10 +91,8 @@ const Canvas = () => {
         />
       <Stage 
         ref={stageRef}
-        width={768} 
-        height={512}
-        x={100}
-        y={100}
+        width={window.innerWidth} 
+        height={window.innerHeight}
         onMouseDown={checkDeselect}
         onTouchStart={checkDeselect}
         >
@@ -116,8 +101,14 @@ const Canvas = () => {
             imageUrl={imageUrl} 
             isSelected={isSelected}
             onSelect={() => setIsSelected(true)} 
-            onChange={handleChangeAttributes}
+            onChange={(attributes) => {
+                setImageAttributes((oldAttributes) => {
+                    const newImageAttributes = {...oldAttributes, ...attributes};
+                    return newImageAttributes;
+                }); // Update image attributes
+              }}
             imageFilters={imageFilters}
+            imageAttributes={imageAttributes}
         />
         </Layer>
       </Stage>
