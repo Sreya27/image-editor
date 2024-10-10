@@ -19,7 +19,7 @@ interface UploadableImageProps {
     contrast: number | null;
     brightness: number | null;
     maskThreshold: number | null;
-    pixelSize: number | null;
+    pixelSize: number;
     sepia: boolean;
   }
   imageAttributes: any
@@ -82,6 +82,15 @@ const UploadableImage = ({
         imageRef.current.getLayer()?.batchDraw();
       }
   }, [imageFilters.blurRadius])
+
+  useEffect(() => {
+    if(imageRef.current) {
+        imageRef.current.cache();
+        imageRef.current.filters([Konva.Filters.Pixelate]);
+        imageRef.current.pixelSize(imageFilters.pixelSize);
+        imageRef.current.getLayer()?.batchDraw();
+    }
+  }, [imageFilters.pixelSize])
 
   return (
     <>

@@ -6,10 +6,11 @@ const filters = ["Blur", "Contrast", "Brightness", "Mask", "Pixelate", "Sepia"];
 interface ToolbarProps {
     onUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
     onBlur: () => void;
+    onPixelate: () => void;
     onDownload: () => void;
 }
 
-const Toolbar = ({ onUpload, onBlur, onDownload }: ToolbarProps) => {
+const Toolbar = ({ onUpload, onBlur, onPixelate ,onDownload }: ToolbarProps) => {
     return (
         <div id="tool-container" className="bg-gray-800 text-white flex items-center justify-between p-2 shadow-lg">
             <div className="flex items-center space-x-4">
@@ -26,7 +27,7 @@ const Toolbar = ({ onUpload, onBlur, onDownload }: ToolbarProps) => {
                 <button className="flex items-center space-x-1 hover:text-gray-300">
                     Sepia
                 </button>
-                <button className="flex items-center space-x-1 hover:text-gray-300">
+                <button onClick={onPixelate} className="flex items-center space-x-1 hover:text-gray-300">
                     Pixelate
                 </button>
             </div>

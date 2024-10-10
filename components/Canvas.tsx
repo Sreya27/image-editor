@@ -18,7 +18,7 @@ interface imageFilters {
     contrast: number | null;
     brightness: number | null;
     maskThreshold: number | null;
-    pixelSize: number | null;
+    pixelSize: number;
     sepia: boolean;
 }
 
@@ -38,7 +38,7 @@ const Canvas = () => {
     contrast: null,
     brightness: null,
     maskThreshold: null,
-    pixelSize: null,
+    pixelSize: 0,
     sepia: false,
   })
 
@@ -77,6 +77,13 @@ const Canvas = () => {
     })
   }
 
+  const handlePixelateClick = () => {
+    setImageFilters((oldFilters) => {
+        const newFilters = { ...oldFilters, pixelSize: oldFilters.pixelSize===0 ? 10 : 0}
+        return newFilters;
+    })
+  }
+
   const handleDownloadClick = () => {
     const dataUri = stageRef?.current?.toDataURL({pixelRatio: 3});
     downloadUri(dataUri, "image.png");
@@ -87,6 +94,7 @@ const Canvas = () => {
         <Toolbar 
             onUpload={handleUpload}
             onBlur={handleBlurClick}
+            onPixelate={handlePixelateClick}
             onDownload={handleDownloadClick}
         />
       <Stage 
