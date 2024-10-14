@@ -7,11 +7,9 @@ interface SidebarProps {
   onUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onDownload: () => void;
   toggleFilterMenu: () => void;
-  onHorizontalFlip: () => void;
-  onVerticalFlip: () => void;
 }
 
-const Sidebar = ({ onUpload, onDownload, toggleFilterMenu, onHorizontalFlip, onVerticalFlip }: SidebarProps) => {
+const Sidebar = ({ onUpload, onDownload, toggleFilterMenu }: SidebarProps) => {
   return (
     <div className="w-20 bg-gray-800 p-4 flex flex-col items-center space-y-4">
       <button
@@ -38,14 +36,12 @@ const Sidebar = ({ onUpload, onDownload, toggleFilterMenu, onHorizontalFlip, onV
         <FaSlidersH />
       </button>
       <button
-        onClick={onHorizontalFlip}
         className="p-3 rounded-lg bg-gray-700 hover:bg-gray-600 text-white w-12 h-12 flex items-center justify-center"
         title="Vertical flip"
       >
         <CgEditFlipV />
       </button>
       <button
-        onClick={onVerticalFlip}
         className="p-3 rounded-lg bg-gray-700 hover:bg-gray-600 text-white w-12 h-12 flex items-center justify-center"
         title="Horizontal flip"
       >
