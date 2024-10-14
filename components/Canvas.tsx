@@ -5,7 +5,7 @@ import Konva from "konva";
 import { downloadUri } from "@/lib/utils";
 import FilterMenu from "./FilterMenu";
 import Sidebar from "./Sidebar";
-import { imageAttributes } from "@/lib/types";
+import { ImageAttributes } from "@/lib/types";
 import { FilterValues } from "@/lib/types";
 
 
@@ -15,7 +15,9 @@ const Canvas = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const [IsFilterMenuOpen, setIsFilterMenuOpen] = useState<boolean>(false);
-  const [imageAttributes, setImageAttributes] = useState<imageAttributes>({
+  const [horizontalFlip, setHorizontalFlip] = useState<boolean>(false);
+  const [verticalFlip, setVerticalFlip] = useState<boolean>(false);
+  const [imageAttributes, setImageAttributes] = useState<ImageAttributes>({
     x: 100,
     y: 100,
     width: 0,
