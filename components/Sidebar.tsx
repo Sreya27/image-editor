@@ -1,23 +1,17 @@
 import React from "react";
-import { useState } from "react"
+import { useState } from "react";
 import { FaSave, FaFileImport, FaSlidersH } from "react-icons/fa";
+import { CgEditFlipV, CgEditFlipH } from "react-icons/cg";
 
 interface SidebarProps {
   onUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  // onBlur: () => void;
-  // onPixelate: () => void;
   onDownload: () => void;
   toggleFilterMenu: () => void;
+  onHorizontalFlip: () => void;
+  onVerticalFlip: () => void;
 }
 
-const Sidebar = ({
-  onUpload,
-  // onBlur,
-  // onPixelate,
-  onDownload,
-  toggleFilterMenu
-}: SidebarProps) => {
-  
+const Sidebar = ({ onUpload, onDownload, toggleFilterMenu, onHorizontalFlip, onVerticalFlip }: SidebarProps) => {
   return (
     <div className="w-20 bg-gray-800 p-4 flex flex-col items-center space-y-4">
       <button
@@ -43,21 +37,20 @@ const Sidebar = ({
       >
         <FaSlidersH />
       </button>
-      {/* <button
-        onClick={onBlur}
-        className="flex items-center space-x-1 hover:text-gray-300"
+      <button
+        onClick={onHorizontalFlip}
+        className="p-3 rounded-lg bg-gray-700 hover:bg-gray-600 text-white w-12 h-12 flex items-center justify-center"
+        title="Vertical flip"
       >
-        Blur
-      </button>
-      <button className="flex items-center space-x-1 hover:text-gray-300">
-        Sepia
+        <CgEditFlipV />
       </button>
       <button
-        onClick={onPixelate}
-        className="flex items-center space-x-1 hover:text-gray-300"
+        onClick={onVerticalFlip}
+        className="p-3 rounded-lg bg-gray-700 hover:bg-gray-600 text-white w-12 h-12 flex items-center justify-center"
+        title="Horizontal flip"
       >
-        Pixelate
-      </button> */}
+        <CgEditFlipH />
+      </button>
     </div>
   );
 };
