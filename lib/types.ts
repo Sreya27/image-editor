@@ -13,7 +13,7 @@ export interface UploadableImageProps {
   imageAttributes: any;
 }
 
-export interface imageAttributes {
+export interface ImageAttributes {
   x: number;
   y: number;
   width?: number;
