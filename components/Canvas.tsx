@@ -2,30 +2,19 @@ import React, { useState, useRef } from "react";
 import { Stage, Layer } from "react-konva";
 import UploadableImage from "./UploadableImage";
 import Konva from "konva";
-import { downloadUri } from "@/utils";
-import Toolbar from "./Toolbar";
+import { downloadUri } from "@/lib/utils";
+import FilterMenu from "./FilterMenu";
+import Sidebar from "./Sidebar";
+import { imageAttributes } from "@/lib/types";
+import { FilterValues } from "@/lib/types";
 
-interface imageAttributes {
-    x: number;
-    y: number;
-    width?: number;
-    height?: number;
-    rotation?: number;
-}
-
-interface imageFilters {
-    blurRadius: number;
-    contrast: number | null;
-    brightness: number | null;
-    maskThreshold: number | null;
-    pixelSize: number;
-    sepia: boolean;
-}
 
 const Canvas = () => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const stageRef = useRef<Konva.Stage>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [isSelected, setIsSelected] = useState<boolean>(false);
+  const [IsFilterMenuOpen, setIsFilterMenuOpen] = useState<boolean>(false);
   const [imageAttributes, setImageAttributes] = useState<imageAttributes>({
     x: 100,
     y: 100,
@@ -33,32 +22,38 @@ const Canvas = () => {
     height: 0,
     rotation: 0,
   });
-  const [imageFilters, setImageFilters] = useState<imageFilters>({
+  const [filterValues, setFilterValues] = useState<FilterValues>({
     blurRadius: 0,
-    contrast: null,
-    brightness: null,
-    maskThreshold: null,
+    contrast: 50,
+    brightness: 50,
     pixelSize: 0,
-    sepia: false,
-  })
+    saturation: 50,
+  });
+
+  const handleFilterChange = (filterName: keyof FilterValues, value: number) => {
+    setFilterValues(prev => ({
+      ...prev,
+      [filterName]: value
+    }));
+  };
 
   const handleUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]; // Get the first file from input
     if (file) {
-        //Revoke the previous object URL if it exists
-        if (imageUrl) {
-            URL.revokeObjectURL(imageUrl);
-        }
-        const newImageUrl = URL.createObjectURL(file);
-        const newImageAttributes = {
-            imageUrl: newImageUrl,
-            x: 100,
-            y: 100,
-            width: 768,
-            height: 512,
-        }
-        setImageUrl(newImageUrl);
-        setImageAttributes(newImageAttributes);
+      //Revoke the previous object URL if it exists
+      if (imageUrl) {
+        URL.revokeObjectURL(imageUrl);
+      }
+      const newImageUrl = URL.createObjectURL(file);
+      const newImageAttributes = {
+        imageUrl: newImageUrl,
+        x: 100,
+        y: 100,
+        width: 768,
+        height: 512,
+      };
+      setImageUrl(newImageUrl);
+      setImageAttributes(newImageAttributes);
     }
   };
 
@@ -66,60 +61,54 @@ const Canvas = () => {
     //deselect when clicked on empty area
     const clickedOnEmpty = event.target === event.target.getStage();
     if (clickedOnEmpty) {
-        setIsSelected(false);
+      setIsSelected(false);
     }
-  }
-
-  const handleBlurClick = () => {
-    setImageFilters((oldFilters) => {
-        const newFilters = { ...oldFilters, blurRadius: oldFilters.blurRadius===0 ? 10 : 0 };
-        return newFilters;
-    })
-  }
-
-  const handlePixelateClick = () => {
-    setImageFilters((oldFilters) => {
-        const newFilters = { ...oldFilters, pixelSize: oldFilters.pixelSize===0 ? 10 : 0}
-        return newFilters;
-    })
-  }
+  };
 
   const handleDownloadClick = () => {
-    const dataUri = stageRef?.current?.toDataURL({pixelRatio: 3});
+    const dataUri = stageRef?.current?.toDataURL({ pixelRatio: 3 });
     downloadUri(dataUri, "image.png");
-  }
+  };
 
   return (
-    <div className="bg-gray-100">
-        <Toolbar 
-            onUpload={handleUpload}
-            onBlur={handleBlurClick}
-            onPixelate={handlePixelateClick}
-            onDownload={handleDownloadClick}
-        />
-      <Stage 
-        ref={stageRef}
-        width={window.innerWidth} 
-        height={window.innerHeight}
-        onMouseDown={checkDeselect}
-        onTouchStart={checkDeselect}
+    <div className="flex h-screen bg-gray-900">
+      <main className="flex-1 p-6" ref={containerRef}>
+        <Stage
+          ref={stageRef}
+          width={window.innerWidth * 0.75}
+          height={window.innerHeight * 0.9}
+          onMouseDown={checkDeselect}
+          onTouchStart={checkDeselect}
+          className="bg-gray-800 rounded-lg"
         >
-        <Layer>
-          <UploadableImage 
-            imageUrl={imageUrl} 
-            isSelected={isSelected}
-            onSelect={() => setIsSelected(true)} 
-            onChange={(attributes) => {
+          <Layer>
+            <UploadableImage
+              imageUrl={imageUrl}
+              isSelected={isSelected}
+              onSelect={() => setIsSelected(true)}
+              onChange={(attributes) => {
                 setImageAttributes((oldAttributes) => {
-                    const newImageAttributes = {...oldAttributes, ...attributes};
-                    return newImageAttributes;
+                  const newImageAttributes = {
+                    ...oldAttributes,
+                    ...attributes,
+                  };
+                  return newImageAttributes;
                 }); // Update image attributes
               }}
-            imageFilters={imageFilters}
-            imageAttributes={imageAttributes}
+              filterValues={filterValues}
+              imageAttributes={imageAttributes}
+            />
+          </Layer>
+        </Stage>
+      </main>
+      <aside>
+        <Sidebar
+          onUpload={handleUpload}
+          onDownload={handleDownloadClick}
+          toggleFilterMenu={() => setIsFilterMenuOpen((prevState) => !prevState)}
         />
-        </Layer>
-      </Stage>
+      </aside>
+      {IsFilterMenuOpen && <FilterMenu title="Filters" filters={filterValues} onFilterChange={handleFilterChange}/>}
     </div>
   );
 };

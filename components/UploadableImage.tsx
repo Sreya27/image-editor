@@ -2,36 +2,28 @@ import React, { useRef, useEffect } from "react";
 import { Image as KonvaImage, Transformer } from "react-konva";
 import useImage from "use-image";
 import Konva from "konva";
+import { UploadableImageProps } from "@/lib/types";
+import {
+  mapUserInputToBrightnessValue,
+  mapUserInputToContrastValue,
+  mapUserInputToSaturationValue,
+} from "@/lib/utils";
 
-interface UploadableImageProps {
-  imageUrl: string | null;
-  isSelected: boolean;
-  onSelect: () => void;
-  onChange: (attributes: {
-    x: number;
-    y: number;
-    width?: number;
-    height?: number;
-    rotation?: number;
-  }) => void;
-  imageFilters: {
-    blurRadius: number;
-    contrast: number | null;
-    brightness: number | null;
-    maskThreshold: number | null;
-    pixelSize: number;
-    sepia: boolean;
-  }
-  imageAttributes: any
-}
+const filters = [
+  Konva.Filters.Blur,
+  Konva.Filters.Brighten,
+  Konva.Filters.Contrast,
+  Konva.Filters.Pixelate,
+  Konva.Filters.HSV,
+];
 
 const UploadableImage = ({
   imageUrl,
   isSelected,
   onSelect,
   onChange,
-  imageFilters,
-  imageAttributes
+  filterValues,
+  imageAttributes,
 }: UploadableImageProps) => {
   const [image] = useImage(imageUrl || "");
   const imageRef = useRef<Konva.Image>(null);
@@ -67,7 +59,7 @@ const UploadableImage = ({
       onChange({
         x: xPos, //updating x position
         y: yPos, //updating y position
-        width: node.width() * scaleX, 
+        width: node.width() * scaleX,
         height: node.height() * scaleY,
         rotation: node.rotation(),
       });
@@ -76,21 +68,19 @@ const UploadableImage = ({
 
   useEffect(() => {
     if (imageRef.current) {
-        imageRef.current.cache();
-        imageRef.current.filters([Konva.Filters.Blur]);
-        imageRef.current.blurRadius(imageFilters.blurRadius);
-        imageRef.current.getLayer()?.batchDraw();
-      }
-  }, [imageFilters.blurRadius])
+      imageRef.current.blurRadius(filterValues.blurRadius);
+      imageRef.current.brightness(mapUserInputToBrightnessValue(filterValues.brightness));
+      imageRef.current.contrast(mapUserInputToContrastValue(filterValues.contrast));
+      imageRef.current.pixelSize(filterValues.pixelSize);
+      imageRef.current.value(mapUserInputToSaturationValue(filterValues.saturation));
+    }
+  }, [filterValues]);
 
   useEffect(() => {
-    if(imageRef.current) {
-        imageRef.current.cache();
-        imageRef.current.filters([Konva.Filters.Pixelate]);
-        imageRef.current.pixelSize(imageFilters.pixelSize);
-        imageRef.current.getLayer()?.batchDraw();
+    if (imageRef.current) {
+      imageRef.current.cache();
     }
-  }, [imageFilters.pixelSize])
+  }, [image]);
 
   return (
     <>
@@ -105,13 +95,9 @@ const UploadableImage = ({
         onClick={onSelect}
         onDragEnd={handleDragEnd}
         onTransformEnd={handleTranformEnd}
+        filters={filters}
       />
-      {isSelected && (
-        <Transformer
-          ref={transformerRef}
-          flipEnabled={false}
-        />
-      )}
+      {isSelected && <Transformer ref={transformerRef} flipEnabled={true} />}
     </>
   );
 };
