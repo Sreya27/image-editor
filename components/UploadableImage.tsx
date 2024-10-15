@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useLayoutEffect } from "react";
 import { Image as KonvaImage, Transformer } from "react-konva";
 import useImage from "use-image";
 import Konva from "konva";
@@ -53,8 +53,8 @@ const UploadableImage = ({
       const xPos = node.x(); //get current x position after tranformation
       const yPos = node.y(); //get current y position after transformation
 
-      node.scaleX(1); //reset scaleX
-      node.scaleY(1); //reset scaleY
+      node.scaleX(1); 
+      node.scaleY(1); 
 
       onChange({
         x: xPos, //updating x position
@@ -66,21 +66,21 @@ const UploadableImage = ({
     }
   };
 
-  useEffect(() => {
-    if (imageRef.current) {
-      imageRef.current.blurRadius(filterValues.blurRadius);
-      imageRef.current.brightness(mapUserInputToBrightnessValue(filterValues.brightness));
-      imageRef.current.contrast(mapUserInputToContrastValue(filterValues.contrast));
-      imageRef.current.pixelSize(filterValues.pixelSize);
-      imageRef.current.value(mapUserInputToSaturationValue(filterValues.saturation));
-    }
-  }, [filterValues]);
+  // useEffect(() => {
+  //   if (imageRef.current) {
+  //     imageRef.current.blurRadius(filterValues.blurRadius);
+  //     imageRef.current.brightness(mapUserInputToBrightnessValue(filterValues.brightness));
+  //     imageRef.current.contrast(mapUserInputToContrastValue(filterValues.contrast));
+  //     imageRef.current.pixelSize(filterValues.pixelSize);
+  //     imageRef.current.value(mapUserInputToSaturationValue(filterValues.saturation));
+  //   }
+  // }, [filterValues]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (imageRef.current) {
       imageRef.current.cache();
     }
-  }, [image]);
+  }, [imageAttributes ,image, isSelected]);
 
   return (
     <>
@@ -96,8 +96,13 @@ const UploadableImage = ({
         onDragEnd={handleDragEnd}
         onTransformEnd={handleTranformEnd}
         filters={filters}
+        blurRadius={filterValues.blurRadius}
+        brightness={mapUserInputToBrightnessValue(filterValues.brightness)}
+        contrast={mapUserInputToContrastValue(filterValues.contrast)}
+        pixelSize={filterValues.pixelSize}
+
       />
-      {isSelected && <Transformer ref={transformerRef} flipEnabled={true} />}
+      {isSelected && <Transformer ref={transformerRef}/>}
     </>
   );
 };
