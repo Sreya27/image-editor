@@ -79,8 +79,9 @@ const UploadableImage = ({
   useLayoutEffect(() => {
     if (imageRef.current) {
       imageRef.current.cache();
+      imageRef.current.getLayer()?.batchDraw();
     }
-  }, [imageAttributes ,image, isSelected]);
+  }, [imageAttributes ,image, isSelected, filterValues]);
 
   return (
     <>
