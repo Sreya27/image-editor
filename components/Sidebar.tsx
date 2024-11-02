@@ -43,12 +43,15 @@ const Sidebar = ({ onUpload, onDownload, toggleFilterMenu, toggleHorizontalFlip,
         title="Vertical flip"
       >
         <CgEditFlipV />
+        <CgEditFlipV />
       </button>
       <button
         onClick={toggleHorizontalFlip}
         className="p-3 rounded-lg bg-gray-700 hover:bg-gray-600 text-white w-12 h-12 flex items-center justify-center"
         title="Horizontal flip"
       >
+        <CgEditFlipH />
+      </button>
         <CgEditFlipH />
       </button>
     </div>
