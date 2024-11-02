@@ -24,6 +24,7 @@ const UploadableImage = ({
   onChange,
   filterValues,
   imageAttributes,
+  flip
 }: UploadableImageProps) => {
   const [image] = useImage(imageUrl || "");
   const imageRef = useRef<Konva.Image>(null);
@@ -66,16 +67,6 @@ const UploadableImage = ({
     }
   };
 
-  // useEffect(() => {
-  //   if (imageRef.current) {
-  //     imageRef.current.blurRadius(filterValues.blurRadius);
-  //     imageRef.current.brightness(mapUserInputToBrightnessValue(filterValues.brightness));
-  //     imageRef.current.contrast(mapUserInputToContrastValue(filterValues.contrast));
-  //     imageRef.current.pixelSize(filterValues.pixelSize);
-  //     imageRef.current.value(mapUserInputToSaturationValue(filterValues.saturation));
-  //   }
-  // }, [filterValues]);
-
   useLayoutEffect(() => {
     if (imageRef.current) {
       imageRef.current.cache();
@@ -83,14 +74,19 @@ const UploadableImage = ({
     }
   }, [imageAttributes ,image, isSelected, filterValues]);
 
+  useEffect(() => {
+    if(imageRef.current){
+      const node = imageRef.current;
+      node.offsetX(node.width()/2);
+      node.offsetY(node.height()/2);
+    }
+  }, [image])
+
   return (
     <>
       <KonvaImage
+        {...imageAttributes}
         image={image}
-        x={imageAttributes.x}
-        y={imageAttributes.y}
-        width={imageAttributes.width}
-        height={imageAttributes.height}
         draggable
         ref={imageRef}
         onClick={onSelect}
@@ -101,9 +97,10 @@ const UploadableImage = ({
         brightness={mapUserInputToBrightnessValue(filterValues.brightness)}
         contrast={mapUserInputToContrastValue(filterValues.contrast)}
         pixelSize={filterValues.pixelSize}
-
+        scaleX={flip.horizontal ? -1 : 1}
+        scaleY={flip.vertical ? -1 : 1}
       />
-      {isSelected && <Transformer ref={transformerRef}/>}
+      {isSelected && <Transformer ref={transformerRef} />}
     </>
   );
 };

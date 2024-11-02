@@ -99,6 +99,7 @@ const Canvas = () => {
               }}
               filterValues={filterValues}
               imageAttributes={imageAttributes}
+              flip={{horizontal: horizontalFlip, vertical: verticalFlip}}
             />
           </Layer>
         </Stage>
@@ -108,6 +109,8 @@ const Canvas = () => {
           onUpload={handleUpload}
           onDownload={handleDownloadClick}
           toggleFilterMenu={() => setIsFilterMenuOpen((prevState) => !prevState)}
+          toggleHorizontalFlip={() => setHorizontalFlip((prevState) => !prevState)}
+          toggleVerticalFlip={() => setVerticalFlip((prevState) => !prevState)}
         />
       </aside>
       {IsFilterMenuOpen && <FilterMenu title="Filters" filters={filterValues} onFilterChange={handleFilterChange}/>}

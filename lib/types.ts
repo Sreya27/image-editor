@@ -11,6 +11,7 @@ export interface UploadableImageProps {
   }) => void;
   filterValues: FilterValues;
   imageAttributes: any;
+  flip: {horizontal: boolean, vertical: boolean}
 }
 
 export interface ImageAttributes {
